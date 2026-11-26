@@ -1,0 +1,35 @@
+[
+  {
+    "entrada": "Como está o estoque do PRD-001?",
+    "esperado": "API consultada; 5 unidades, mínimo 10; estoque baixo.",
+    "observado": {
+      "pergunta": "Como está o estoque do PRD-001?",
+      "erro": "Não foi possível interpretar a solicitação. Verifique a configuração e tente novamente.",
+      "tipo_erro": "ServerError",
+      "resposta": "Não foi possível interpretar a solicitação. Verifique a configuração e tente novamente.",
+      "consultou_api": false
+    }
+  },
+  {
+    "entrada": "Como está o estoque do PRD-999?",
+    "esperado": "API consultada; produto não encontrado.",
+    "observado": {
+      "pergunta": "Como está o estoque do PRD-999?",
+      "erro": "Não foi possível interpretar a solicitação. Verifique a configuração e tente novamente.",
+      "tipo_erro": "ServerError",
+      "resposta": "Não foi possível interpretar a solicitação. Verifique a configuração e tente novamente.",
+      "consultou_api": false
+    }
+  },
+  {
+    "entrada": "O que é estoque mínimo?",
+    "esperado": "Explicação conceitual sem consultar a API.",
+    "observado": {
+      "pergunta": "O que é estoque mínimo?",
+      "erro": "Não foi possível interpretar a solicitação. Verifique a configuração e tente novamente.",
+      "tipo_erro": "ServerError",
+      "resposta": "Não foi possível interpretar a solicitação. Verifique a configuração e tente novamente.",
+      "consultou_api": false
+    }
+  }
+]

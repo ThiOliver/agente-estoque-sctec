@@ -8,7 +8,7 @@ Responder à pergunta: “Como está o estoque do produto PRD-001?”, consultan
 
 ## Estado atual
 
-Repositório criado e primeira consulta HTTP à API do professor realizada com sucesso. O agente e a integração n8n ainda não foram implementados. Docker instalado e n8n aberto no navegador, conforme verificação do usuário. Configuração do LLM pendente.
+Repositório criado e primeira consulta HTTP à API do professor realizada com sucesso. O agente inicial foi implementado e passou em cinco testes locais simulados. A chamada curta ao Gemini funcionou, mas os testes reais de interpretação apresentaram falhas do serviço (incluindo 504/prazo excedido); esta etapa ainda NÃO está concluída. A integração n8n permanece pendente. Docker instalado e n8n aberto no navegador, conforme verificação do usuário. Chave Gemini configurada localmente; modelo selecionado: gemini-3.8-flash.
 
 ## Executar a API de apoio
 
@@ -66,7 +66,7 @@ Esta configuração prepara apenas o editor n8n. O workflow integrado ao agente 
 
 ## Organização Git
 
-A preparação do agente está na branch `feature/agente-langgraph`. As dependências e o arquivo de exemplo abaixo preparam o ambiente; o grafo ainda não foi implementado.
+A implementação inicial do agente está na branch `feature/agente-langgraph`.
 
 ## Ambiente Python do agente
 
@@ -78,7 +78,7 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-Copie `.env.example` para `.env` se este ainda não existir. Crie sua chave em https://aistudio.google.com/apikey e preencha `GEMINI_API_KEY` somente no `.env`. O modelo será escolhido após verificar a disponibilidade da conta. Não envie chaves por chat nem faça commit do `.env`.
+Copie `.env.example` para `.env` se este ainda não existir. Crie sua chave em https://aistudio.google.com/apikey e preencha `GEMINI_API_KEY` somente no `.env`. Preencha `GEMINI_MODEL=gemini-3.8-flash`, modelo que respondeu ao teste inicial nesta conta; disponibilidade e cotas podem variar. Não envie chaves por chat nem faça commit do `.env`.
 
 Esta venv pertence ao agente e é independente da venv da API do professor. O n8n usa Docker e não depende de nenhuma delas.
 
@@ -96,10 +96,59 @@ O código do agente será desenvolvido neste repositório. A API do professor é
 
 ## Entregáveis pendentes
 
-- Código Python com LLM, LangGraph, ferramenta HTTP e validações.
+- Validar a execução real do código Python com Gemini e API; a implementação inicial já existe.
 - Workflow n8n exportado e evidência da troca de dados.
 - Configuração e instruções reproduzíveis de execução.
 - Entradas, resultados esperados, observados e evidências dos três testes.
 - Arquitetura, limitações e link do vídeo.
 
 Credenciais devem permanecer em `.env`, fora do Git. O projeto utiliza dados fictícios.
+
+## Executar o agente
+
+Com a API do professor em execução e o `.env` preenchido:
+
+```bash
+source .venv/bin/activate
+python main.py "Como está o estoque do PRD-001?"
+python scripts/testar_cenarios.py
+python -m unittest discover -s tests -v
+```
+
+O script de cenários usa o Gemini real e registra resultados em `evidencias/cenarios_agente.json`. Inspecione os resultados: um arquivo gerado não significa automaticamente que o cenário passou. Os testes unitários usam decisões e ferramentas simuladas e não substituem a demonstração real.
+
+## Como funciona
+
+```mermaid
+flowchart LR
+    I[Início] --> L[Interpretar com Gemini]
+    L -->|Consulta válida| A[Consultar API]
+    L -->|Conceito, dúvida, limite ou erro| R[Responder]
+    A --> R
+    R --> F[Fim]
+```
+
+- `agente/state_graph.py`: define o estado compartilhado, os três nós e a transição condicional.
+- `agente/llm.py`: contém papel, objetivo e restrições do Gemini; valida sua decisão em JSON.
+- `agente/ferramentas.py`: realiza consulta HTTP com timeout e valida o produto retornado.
+- `agente/contratos.py`: valida pergunta, decisão e campos do produto.
+
+A memória compartilhada transporta pergunta, decisão, produto, erro, resposta e indicador de consulta à API durante uma execução. Não existe histórico persistente entre perguntas. O grafo não possui ciclos e também tem limite de execução.
+
+As quantidades são comparadas por Python: zero significa esgotado; acima de zero e até o mínimo significa baixo (com indicação do limite); acima do mínimo significa normal. A resposta de produto usa os dados validados da API, sem uma segunda geração pelo LLM. Textos da API não são enviados ao modelo como instruções.
+
+## Limites atuais
+
+Somente consultas por um código de produto por vez; não cadastra nem altera dados. Por isso, não há ação sensível que exija aprovação humana. Perguntas conceituais dependem da resposta do modelo e podem conter imprecisões. Instruções do LLM não garantem proteção absoluta contra entradas maliciosas: a ferramenta é restrita a leitura, e o código escolhido deve estar presente na pergunta. Indisponibilidade do modelo ou da API produz uma mensagem controlada.
+
+Ainda faltam o workflow integrado ao agente, sua exportação/evidência e o vídeo de até cinco minutos.
+
+## Ordem de leitura para quem está começando
+
+1. `main.py`: recebe a pergunta e inicia o programa.
+2. `agente/state_graph.py`: mostra as três etapas e a escolha do caminho.
+3. `agente/llm.py`: conversa com o Gemini para entender a pergunta.
+4. `agente/ferramentas.py`: busca o produto na API do professor.
+5. `agente/contratos.py`: lista as regras de validação dos dados.
+
+Pense no estado como uma ficha: cada etapa lê a ficha e preenche mais informações. Nó é uma etapa; transição é a ligação entre etapas; transição condicional é uma escolha de caminho. O arquivo `__init__.py` apenas permite importar a pasta `agente` como um pacote Python.
