@@ -66,6 +66,24 @@ Esta configuração prepara apenas o editor n8n. O workflow integrado ao agente 
 
 ## Organização Git
 
+A preparação do agente está na branch `feature/agente-langgraph`. As dependências e o arquivo de exemplo abaixo preparam o ambiente; o grafo ainda não foi implementado.
+
+## Ambiente Python do agente
+
+Dentro de `agente-estoque`:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
+
+Copie `.env.example` para `.env` se este ainda não existir. Crie sua chave em https://aistudio.google.com/apikey e preencha `GEMINI_API_KEY` somente no `.env`. O modelo será escolhido após verificar a disponibilidade da conta. Não envie chaves por chat nem faça commit do `.env`.
+
+Esta venv pertence ao agente e é independente da venv da API do professor. O n8n usa Docker e não depende de nenhuma delas.
+
+## Branches
+
 - `main`: versões prontas para demonstração.
 - `develop`: integração do desenvolvimento.
 - `feature/...`: trabalho de cada etapa, integrado primeiro em `develop`.
