@@ -1,0 +1,16 @@
+name: agente-estoque-sctec
+
+services:
+  n8n:
+    image: n8nio/n8n:2.49.7
+    ports:
+      - "127.0.0.1:5678:5678"
+    environment:
+      TZ: America/Sao_Paulo
+      GENERIC_TIMEZONE: America/Sao_Paulo
+      N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  n8n_data:

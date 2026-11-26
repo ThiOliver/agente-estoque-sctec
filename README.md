@@ -42,6 +42,28 @@ Resultado observado na preparação: Mouse sem fio, quantidade atual 5, estoque 
 
 As etapas seguem o cronograma do curso, avançando conforme a conclusão de cada marco.
 
+## Preparar Docker e abrir n8n
+
+No Linux Mint 22.3, execute no terminal, dentro da pasta `agente-estoque`:
+
+```bash
+bash scripts/instalar_docker.sh
+sudo docker compose up -d
+```
+
+O script configura o repositório oficial do Docker para a base Ubuntu Noble, instala Docker Engine e Compose e executa `hello-world`. Exige senha de administrador, digitada somente no terminal. O Docker informa que derivados como Mint não são oficialmente suportados; esta configuração usa a base Ubuntu do sistema.
+
+Abra http://localhost:5678 e crie a conta local de acesso ao n8n. O volume `n8n_data` conserva os workflows quando o contêiner é parado. O serviço fica acessível apenas neste computador.
+
+```bash
+sudo docker compose ps       # verificar o serviço
+sudo docker compose logs --tail=50 n8n  # consultar logs
+sudo docker compose stop    # parar
+sudo docker compose start   # iniciar novamente
+```
+
+Esta configuração prepara apenas o editor n8n. O workflow integrado ao agente será construído na etapa de integração. A instalação e a execução ainda precisam ser confirmadas neste computador.
+
 ## Organização Git
 
 - `main`: versões prontas para demonstração.
