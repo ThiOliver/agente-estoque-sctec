@@ -8,7 +8,7 @@ Responder à pergunta: “Como está o estoque do produto PRD-001?”, consultan
 
 ## Estado atual
 
-Repositório criado e primeira consulta HTTP à API do professor realizada com sucesso. O agente e a integração n8n ainda não foram implementados. Docker e configuração do LLM permanecem pendentes.
+Repositório criado e primeira consulta HTTP à API do professor realizada com sucesso. O agente e a integração n8n ainda não foram implementados. Docker instalado e n8n aberto no navegador, conforme verificação do usuário. Configuração do LLM pendente.
 
 ## Executar a API de apoio
 
@@ -62,7 +62,7 @@ sudo docker compose stop    # parar
 sudo docker compose start   # iniciar novamente
 ```
 
-Esta configuração prepara apenas o editor n8n. O workflow integrado ao agente será construído na etapa de integração. A instalação e a execução ainda precisam ser confirmadas neste computador.
+Esta configuração prepara apenas o editor n8n. O workflow integrado ao agente será construído na etapa de integração. Instalação concluída; o usuário demonstrou a tela de configuração inicial do n8n no navegador.
 
 ## Organização Git
 
