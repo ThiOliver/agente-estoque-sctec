@@ -8,7 +8,27 @@ Responder à pergunta: “Como está o estoque do produto PRD-001?”, consultan
 
 ## Estado atual
 
-Preparação inicial. O agente e a integração n8n ainda não foram implementados; não há evidências de execução disponíveis.
+Repositório criado e primeira consulta HTTP à API do professor realizada com sucesso. O agente e a integração n8n ainda não foram implementados. Docker e configuração do LLM permanecem pendentes.
+
+## Executar a API de apoio
+
+Em uma pasta ao lado deste projeto:
+
+```bash
+git clone https://github.com/wangsouza/api-estoque.git api-estoque-professor
+cd api-estoque-professor
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+Abra http://127.0.0.1:8000/docs para explorar a API. Em outro terminal:
+
+```bash
+curl --fail --silent --show-error http://127.0.0.1:8000/produtos/PRD-001
+```
+
+Resultado observado na preparação: Mouse sem fio, quantidade atual 5, estoque mínimo 10. A consulta funcionou; a análise pelo agente será implementada na próxima etapa. Este registro não substitui os três testes finais do agente.
 
 ## Sequência de desenvolvimento
 

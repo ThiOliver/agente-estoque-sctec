@@ -1,0 +1,13 @@
+{
+  "etapa": "Preparação: consulta HTTP direta, ainda sem agente",
+  "metodo": "GET",
+  "url": "http://127.0.0.1:8000/produtos/PRD-001",
+  "resultado_observado": {
+    "codigo": "PRD-001",
+    "nome": "Mouse sem fio",
+    "categoria": "Periféricos",
+    "quantidade_atual": 5,
+    "estoque_minimo": 10,
+    "unidade": "un"
+  }
+}
