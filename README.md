@@ -8,7 +8,7 @@ Responder à pergunta: “Como está o estoque do produto PRD-001?”, consultan
 
 ## Estado atual
 
-Repositório criado e primeira consulta HTTP à API do professor realizada com sucesso. O agente e a integração n8n ainda não foram implementados. Docker e configuração do LLM permanecem pendentes.
+Repositório criado e primeira consulta HTTP à API do professor realizada com sucesso. O agente e a integração n8n ainda não foram implementados. Docker instalado e n8n aberto no navegador, conforme verificação do usuário. Configuração do LLM pendente.
 
 ## Executar a API de apoio
 
@@ -41,6 +41,28 @@ Resultado observado na preparação: Mouse sem fio, quantidade atual 5, estoque 
 7. Submeter os links no AVA até 30/11/2026 às 22h.
 
 As etapas seguem o cronograma do curso, avançando conforme a conclusão de cada marco.
+
+## Preparar Docker e abrir n8n
+
+No Linux Mint 22.3, execute no terminal, dentro da pasta `agente-estoque`:
+
+```bash
+bash scripts/instalar_docker.sh
+sudo docker compose up -d
+```
+
+O script configura o repositório oficial do Docker para a base Ubuntu Noble, instala Docker Engine e Compose e executa `hello-world`. Exige senha de administrador, digitada somente no terminal. O Docker informa que derivados como Mint não são oficialmente suportados; esta configuração usa a base Ubuntu do sistema.
+
+Abra http://localhost:5678 e crie a conta local de acesso ao n8n. O volume `n8n_data` conserva os workflows quando o contêiner é parado. O serviço fica acessível apenas neste computador.
+
+```bash
+sudo docker compose ps       # verificar o serviço
+sudo docker compose logs --tail=50 n8n  # consultar logs
+sudo docker compose stop    # parar
+sudo docker compose start   # iniciar novamente
+```
+
+Esta configuração prepara apenas o editor n8n. O workflow integrado ao agente será construído na etapa de integração. Instalação concluída; o usuário demonstrou a tela de configuração inicial do n8n no navegador.
 
 ## Organização Git
 
