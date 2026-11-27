@@ -8,7 +8,7 @@ Responder à pergunta: “Como está o estoque do produto PRD-001?”, consultan
 
 ## Estado atual
 
-Repositório criado e primeira consulta HTTP à API do professor realizada com sucesso. O agente inicial foi implementado e passou em cinco testes locais simulados. A chamada curta ao Gemini funcionou, mas os testes reais de interpretação apresentaram falhas do serviço (incluindo 504/prazo excedido); esta etapa ainda NÃO está concluída. A integração n8n permanece pendente. Docker instalado e n8n aberto no navegador, conforme verificação do usuário. Chave Gemini configurada localmente; modelo selecionado: gemini-3.8-flash.
+Repositório criado e primeira consulta HTTP à API do professor realizada com sucesso. O agente inicial passou em cinco testes locais e nos três cenários reais com Gemini e API do professor. A integração n8n permanece pendente. Docker instalado e n8n aberto no navegador, conforme verificação do usuário. Chave Gemini configurada localmente; modelo selecionado: gemini-3.1-flash-lite.
 
 ## Executar a API de apoio
 
@@ -28,7 +28,7 @@ Abra http://127.0.0.1:8000/docs para explorar a API. Em outro terminal:
 curl --fail --silent --show-error http://127.0.0.1:8000/produtos/PRD-001
 ```
 
-Resultado observado na preparação: Mouse sem fio, quantidade atual 5, estoque mínimo 10. A consulta funcionou; a análise pelo agente será implementada na próxima etapa. Este registro não substitui os três testes finais do agente.
+Resultado observado na preparação: Mouse sem fio, quantidade atual 5, estoque mínimo 10. A consulta inicial funcionou; a análise pelo agente também foi validada posteriormente nos três cenários. Este registro não substitui os três testes finais do agente.
 
 ## Sequência de desenvolvimento
 
@@ -78,7 +78,7 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-Copie `.env.example` para `.env` se este ainda não existir. Crie sua chave em https://aistudio.google.com/apikey e preencha `GEMINI_API_KEY` somente no `.env`. Preencha `GEMINI_MODEL=gemini-3.8-flash`, modelo que respondeu ao teste inicial nesta conta; disponibilidade e cotas podem variar. Não envie chaves por chat nem faça commit do `.env`.
+Copie `.env.example` para `.env` se este ainda não existir. Crie sua chave em https://aistudio.google.com/apikey e preencha `GEMINI_API_KEY` somente no `.env`. Preencha `GEMINI_MODEL=gemini-3.1-flash-lite`, modelo que respondeu ao teste inicial nesta conta; disponibilidade e cotas podem variar. Não envie chaves por chat nem faça commit do `.env`.
 
 Esta venv pertence ao agente e é independente da venv da API do professor. O n8n usa Docker e não depende de nenhuma delas.
 
@@ -96,10 +96,8 @@ O código do agente será desenvolvido neste repositório. A API do professor é
 
 ## Entregáveis pendentes
 
-- Validar a execução real do código Python com Gemini e API; a implementação inicial já existe.
 - Workflow n8n exportado e evidência da troca de dados.
 - Configuração e instruções reproduzíveis de execução.
-- Entradas, resultados esperados, observados e evidências dos três testes.
 - Arquitetura, limitações e link do vídeo.
 
 Credenciais devem permanecer em `.env`, fora do Git. O projeto utiliza dados fictícios.
@@ -152,3 +150,13 @@ Ainda faltam o workflow integrado ao agente, sua exportação/evidência e o ví
 5. `agente/contratos.py`: lista as regras de validação dos dados.
 
 Pense no estado como uma ficha: cada etapa lê a ficha e preenche mais informações. Nó é uma etapa; transição é a ligação entre etapas; transição condicional é uma escolha de caminho. O arquivo `__init__.py` apenas permite importar a pasta `agente` como um pacote Python.
+
+## Validação do agente e correção do Gemini
+
+Em 26/11/2026 (horário de São Paulo), o diagnóstico comparou chamadas curtas com a mesma chave. O `gemini-3.8-flash` retornou 504 tanto em texto quanto em JSON; o `gemini-3.1-flash-lite` respondeu em aproximadamente 1,2 segundo. A troca do modelo resolveu a falha observada, sem trocar a chave nem alterar a lógica do grafo. Isso não significa que o primeiro modelo esteja indisponível para todas as contas.
+
+A API local do professor também precisou ser reiniciada. Ela deve estar executando em um terminal separado durante as consultas.
+
+Os três cenários reais passaram e estão em `evidencias/cenarios_agente.json`, com modelo, horário, entrada, expectativa, resultado observado e verificação automática. A explicação conceitual foi revisada: descreve o estoque mínimo como quantidade de referência para evitar falta durante a reposição. O script retorna código de erro se um cenário falhar; o teste conceitual ainda exige revisão humana do conteúdo.
+
+Referência do modelo: https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite

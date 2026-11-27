@@ -4,32 +4,59 @@
     "esperado": "API consultada; 5 unidades, mínimo 10; estoque baixo.",
     "observado": {
       "pergunta": "Como está o estoque do PRD-001?",
-      "erro": "Não foi possível interpretar a solicitação. Verifique a configuração e tente novamente.",
-      "tipo_erro": "ServerError",
-      "resposta": "Não foi possível interpretar a solicitação. Verifique a configuração e tente novamente.",
-      "consultou_api": false
-    }
+      "decisao": {
+        "acao": "consultar",
+        "codigo": "PRD-001",
+        "resposta": ""
+      },
+      "produto": {
+        "codigo": "PRD-001",
+        "nome": "Mouse sem fio",
+        "categoria": "Periféricos",
+        "quantidade_atual": 5,
+        "estoque_minimo": 10,
+        "unidade": "un"
+      },
+      "resposta": "PRD-001 — Mouse sem fio: 5 un disponíveis; mínimo 10. Estoque baixo. Fonte: API de estoque.",
+      "consultou_api": true
+    },
+    "verificacao_automatica": "PASSOU",
+    "modelo": "gemini-3.1-flash-lite",
+    "executado_em_utc": "2026-11-27T00:26:16.991227+00:00"
   },
   {
     "entrada": "Como está o estoque do PRD-999?",
     "esperado": "API consultada; produto não encontrado.",
     "observado": {
       "pergunta": "Como está o estoque do PRD-999?",
-      "erro": "Não foi possível interpretar a solicitação. Verifique a configuração e tente novamente.",
-      "tipo_erro": "ServerError",
-      "resposta": "Não foi possível interpretar a solicitação. Verifique a configuração e tente novamente.",
-      "consultou_api": false
-    }
+      "decisao": {
+        "acao": "consultar",
+        "codigo": "PRD-999",
+        "resposta": ""
+      },
+      "erro": "Produto não encontrado na API de estoque.",
+      "resposta": "Produto não encontrado na API de estoque.",
+      "consultou_api": true
+    },
+    "verificacao_automatica": "PASSOU",
+    "modelo": "gemini-3.1-flash-lite",
+    "executado_em_utc": "2026-11-27T00:26:18.215044+00:00"
   },
   {
     "entrada": "O que é estoque mínimo?",
     "esperado": "Explicação conceitual sem consultar a API.",
     "observado": {
       "pergunta": "O que é estoque mínimo?",
-      "erro": "Não foi possível interpretar a solicitação. Verifique a configuração e tente novamente.",
-      "tipo_erro": "ServerError",
-      "resposta": "Não foi possível interpretar a solicitação. Verifique a configuração e tente novamente.",
+      "decisao": {
+        "acao": "conceito",
+        "codigo": null,
+        "resposta": "Estoque mínimo é a quantidade mínima de um produto que deve ser mantida em armazém para evitar a ruptura de estoque enquanto se aguarda a chegada de um novo pedido de reposição."
+      },
+      "resposta": "Estoque mínimo é a quantidade mínima de um produto que deve ser mantida em armazém para evitar a ruptura de estoque enquanto se aguarda a chegada de um novo pedido de reposição.",
       "consultou_api": false
-    }
+    },
+    "verificacao_automatica": "PASSOU",
+    "modelo": "gemini-3.1-flash-lite",
+    "executado_em_utc": "2026-11-27T00:26:19.302757+00:00"
   }
 ]
