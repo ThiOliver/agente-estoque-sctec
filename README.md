@@ -6,7 +6,8 @@ Projeto avaliativo de agentes de IA: Python, LLM, LangGraph, API de estoque do p
 
 - Repositório: https://github.com/ThiOliver/agente-estoque-sctec
 - Vídeo demonstrativo: **pendente de gravação e inclusão do link**.
-- Identificação de participante(s): **aguardando confirmação do aluno**; em grupo, registrar também as contribuições.
+- Modalidade: **projeto individual**.
+- Aluno: **Thiago Oliveira**.
 - Prazo do documento: **30/11/2026 às 22h**, horário de São Paulo, no AVA.
 
 ## Objetivo
@@ -138,10 +139,9 @@ O código do agente será desenvolvido neste repositório. A API do professor é
 
 ## Entregáveis pendentes
 
-- Confirmar a identificação e, se houver grupo, as contribuições.
 - Disponibilizar o vídeo demonstrativo de até cinco minutos e incluir seu link.
 - Incluir o link do vídeo, promover a entrega revisada para `main` e conferir os links sem login.
-- Submeter os links de GitHub e vídeo no AVA. Em grupo, cada integrante envia os mesmos links.
+- Submeter os links de GitHub e vídeo no AVA.
 
 Credenciais devem permanecer em `.env`, fora do Git. O projeto utiliza dados fictícios.
 
