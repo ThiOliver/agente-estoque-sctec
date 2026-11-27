@@ -1,0 +1,38 @@
+{
+  "origem": "Transcrição da captura do terminal enviada pelo aluno; execução realizada no computador do aluno.",
+  "comando": "python -m unittest discover -s tests -v",
+  "total_testes": 7,
+  "duracao_segundos": 0.042,
+  "resultado": "OK",
+  "testes": [
+    {
+      "nome": "test_codigo_inventado_bloqueado",
+      "resultado": "ok"
+    },
+    {
+      "nome": "test_conceito_nao_consulta",
+      "resultado": "ok"
+    },
+    {
+      "nome": "test_estoque_e_limites",
+      "resultado": "ok"
+    },
+    {
+      "nome": "test_falha_modelo",
+      "resultado": "ok"
+    },
+    {
+      "nome": "test_produto_inexistente",
+      "resultado": "ok"
+    },
+    {
+      "nome": "test_entrada_invalida_nao_chama_agente",
+      "resultado": "ok"
+    },
+    {
+      "nome": "test_recebe_pergunta_e_entrega_ao_agente",
+      "resultado": "ok"
+    }
+  ],
+  "escopo": "Testes locais com dependências simuladas; não chamam Gemini. Os cenários reais estão registrados separadamente."
+}

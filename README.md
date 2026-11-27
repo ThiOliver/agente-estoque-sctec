@@ -8,7 +8,7 @@ Responder à pergunta: “Como está o estoque do produto PRD-001?”, consultan
 
 ## Estado atual
 
-Repositório criado e primeira consulta HTTP à API do professor realizada com sucesso. O agente inicial passou em cinco testes locais e nos três cenários reais com Gemini e API do professor. A integração n8n foi executada com sucesso pelo aluno e o workflow foi exportado em JSON. Docker instalado e n8n aberto no navegador, conforme verificação do usuário. Chave Gemini configurada localmente; modelo selecionado: gemini-3.1-flash-lite.
+Repositório criado e primeira consulta HTTP à API do professor realizada com sucesso. O agente inicial passou em sete testes locais e nos três cenários reais com Gemini e API do professor. A integração n8n foi executada com sucesso pelo aluno e o workflow foi exportado em JSON. Docker instalado e n8n aberto no navegador, conforme verificação do usuário. Chave Gemini configurada localmente; modelo selecionado: gemini-3.1-flash-lite.
 
 ## Executar a API de apoio
 
@@ -105,7 +105,7 @@ No Linux, o Compose usa `network_mode: host` para que o n8n alcance o agente em 
 
 O workflow foi montado manualmente pelo aluno: Webhook (POST, caminho `consulta-estoque`) → HTTP Request (POST para `http://127.0.0.1:8001/perguntar`) → Respond to Webhook. A pergunta recebida no corpo do Webhook será enviada ao agente no campo `pergunta`.
 
-Status: o aluno executou o workflow e apresentou os três nós verdes e a resposta real do produto PRD-001 no terminal. O registro transcrito está em `evidencias/integracao_n8n.json`. Os testes unitários de contrato HTTP ainda não foram concluídos: a execução no ambiente isolado ficou bloqueada. Isso é separado da execução real pelo n8n, que foi demonstrada.
+Status: o aluno executou o workflow e apresentou os três nós verdes e a resposta real do produto PRD-001 no terminal. O registro transcrito está em `evidencias/integracao_n8n.json`. Os sete testes unitários, incluindo os dois de contrato HTTP, passaram no terminal local do aluno. O resultado exibido na captura foi transcrito em `evidencias/testes_unitarios.json`.
 
 Referências: https://docs.docker.com/engine/network/drivers/host/ e https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook/
 
@@ -117,7 +117,6 @@ O código do agente será desenvolvido neste repositório. A API do professor é
 
 ## Entregáveis pendentes
 
-- Concluir os testes unitários de contrato HTTP.
 - Revisar a documentação e preparar o vídeo de até cinco minutos.
 - Incluir o link do vídeo e submeter os links no AVA.
 
