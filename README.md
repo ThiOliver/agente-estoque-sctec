@@ -88,6 +88,27 @@ Esta venv pertence ao agente e é independente da venv da API do professor. O n8
 - `develop`: integração do desenvolvimento.
 - `feature/...`: trabalho de cada etapa, integrado primeiro em `develop`.
 
+## Conexão HTTP para o n8n (em preparação)
+
+O arquivo `servidor.py` recebe um JSON com `pergunta` e chama o mesmo grafo usado por `main.py`. O n8n não recebe a chave do Gemini e não decide a análise.
+
+Dentro da pasta do projeto, com as dependências instaladas:
+
+```bash
+source .venv/bin/activate
+python -m uvicorn servidor:app --host 127.0.0.1 --port 8001
+```
+
+Mantenha esse terminal aberto. A API do professor também deve continuar funcionando na porta 8000. Para verificar somente o servidor do agente, abra http://127.0.0.1:8001/health. A documentação interativa fica em http://127.0.0.1:8001/docs.
+
+No Linux, o Compose usa `network_mode: host` para que o n8n alcance o agente em `127.0.0.1:8001`. `N8N_LISTEN_ADDRESS=127.0.0.1` mantém o editor acessível somente neste computador. Aplique a alteração com `sudo docker compose up -d`; o volume existente é mantido. Esta configuração de rede é destinada ao Docker Engine no Linux.
+
+O workflow será montado manualmente pelo aluno: Webhook (POST, caminho `consulta-estoque`) → HTTP Request (POST para `http://127.0.0.1:8001/perguntar`) → Respond to Webhook. A pergunta recebida no corpo do Webhook será enviada ao agente no campo `pergunta`.
+
+Status: servidor implementado e processo iniciado; teste pelo contêiner e workflow manual ainda pendentes. Os testes de contrato HTTP foram escritos, mas sua execução no ambiente isolado ficou bloqueada; precisam ser concluídos antes de integrar esta branch.
+
+Referências: https://docs.docker.com/engine/network/drivers/host/ e https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook/
+
 ## API de apoio
 
 Repositório do professor: https://github.com/wangsouza/api-estoque
