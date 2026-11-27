@@ -1,0 +1,96 @@
+{
+  "name": "Consulta de estoque com agente IA.",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "consulta-estoque",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e9a8e95b-5ec2-40c3-8e92-653abe7086ee",
+      "name": "Webhook",
+      "webhookId": "2d475c05-4082-4a47-9b68-dd6c66b2bc04"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8001/perguntar",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "pergunta",
+              "value": "={{ $json.body.pergunta }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "36657874-4241-4b6b-ab4c-10a820318f64",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        448,
+        0
+      ],
+      "id": "8f1c8f9e-425a-41f5-84a9-19a8a52af1e5",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "fcc77425-ac1a-466d-9ada-f9438790d794",
+  "meta": {
+    "instanceId": "29cd9c45539efcf8e8a020c56e57a0b567c93ba78b738b3d459df44159076424"
+  },
+  "nodeGroups": [],
+  "id": "zBawDjhBkfAXjSLt",
+  "tags": []
+}
