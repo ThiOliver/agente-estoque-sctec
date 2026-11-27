@@ -2,6 +2,13 @@
 
 Projeto avaliativo de agentes de IA: Python, LLM, LangGraph, API de estoque do professor e automação complementar no n8n.
 
+## Entrega
+
+- Repositório: https://github.com/ThiOliver/agente-estoque-sctec
+- Vídeo demonstrativo: **pendente de gravação e inclusão do link**.
+- Identificação de participante(s): **aguardando confirmação do aluno**; em grupo, registrar também as contribuições.
+- Prazo do documento: **30/11/2026 às 22h**, horário de São Paulo, no AVA.
+
 ## Objetivo
 
 Responder à pergunta: “Como está o estoque do produto PRD-001?”, consultando os dados reais da API simulada e comparando quantidade disponível e estoque mínimo. Também tratar produtos inexistentes e responder perguntas conceituais sem consulta desnecessária.
@@ -9,6 +16,20 @@ Responder à pergunta: “Como está o estoque do produto PRD-001?”, consultan
 ## Estado atual
 
 Repositório criado e primeira consulta HTTP à API do professor realizada com sucesso. O agente inicial passou em sete testes locais e nos três cenários reais com Gemini e API do professor. A integração n8n foi executada com sucesso pelo aluno e o workflow foi exportado em JSON. Docker instalado e n8n aberto no navegador, conforme verificação do usuário. Chave Gemini configurada localmente; modelo selecionado: gemini-3.1-flash-lite.
+
+## Tecnologias e preparação inicial
+
+Python 3.11 ou superior, LangGraph, Gemini (SDK Google GenAI), Pydantic, HTTPX, FastAPI/Uvicorn e n8n via Docker Compose. O ambiente demonstrado é Linux Mint 22.3 com Python 3.12. O Gemini exige internet, chave válida e cota disponível.
+
+Para baixar este projeto em outro computador:
+
+```bash
+git clone https://github.com/ThiOliver/agente-estoque-sctec.git
+cd agente-estoque-sctec
+git switch develop
+```
+
+Durante a preparação da entrega, a versão integrada está em `develop`; a versão final será promovida para `main`. Os caminhos de execução abaixo são relativos à pasta do projeto, independentemente do nome escolhido para ela.
 
 ## Executar a API de apoio
 
@@ -117,8 +138,10 @@ O código do agente será desenvolvido neste repositório. A API do professor é
 
 ## Entregáveis pendentes
 
-- Revisar a documentação e preparar o vídeo de até cinco minutos.
-- Incluir o link do vídeo e submeter os links no AVA.
+- Confirmar a identificação e, se houver grupo, as contribuições.
+- Disponibilizar o vídeo demonstrativo de até cinco minutos e incluir seu link.
+- Incluir o link do vídeo, promover a entrega revisada para `main` e conferir os links sem login.
+- Submeter os links de GitHub e vídeo no AVA. Em grupo, cada integrante envia os mesmos links.
 
 Credenciais devem permanecer em `.env`, fora do Git. O projeto utiliza dados fictícios.
 
@@ -208,3 +231,56 @@ sudo docker inspect agente-estoque-sctec-n8n-1 --format '{{.HostConfig.NetworkMo
 O resultado deve ser `host`. Caso ainda esteja na rede antiga, salve o workflow e aplique `sudo docker compose up -d --force-recreate n8n`. O volume conserva a conta e os workflows salvos.
 
 Se o servidor indicar `address already in use`, verifique `/health` antes de iniciar outra cópia: a porta pode já estar ocupada pelo agente em execução.
+
+## Conferência com o documento avaliativo
+
+| Requisito | Onde conferir | Situação |
+| --- | --- | --- |
+| Consulta e análise de estoque | `agente/ferramentas.py` e `agente/state_graph.py` | Implementado e demonstrado |
+| LLM com papel, objetivo e restrições | `agente/llm.py` | Implementado e testado com Gemini |
+| Nós, estado, condição e encerramento | `agente/state_graph.py` | Três nós, estado compartilhado, escolha de caminho e END |
+| Ferramenta HTTP e validações | `agente/ferramentas.py` e `agente/contratos.py` | Código e dados validados; falhas tratadas |
+| Automação n8n com troca de dados | `workflows/consulta-estoque.json` | Montada e executada pelo aluno |
+| Segurança e limites | `.gitignore`, validações e ferramenta somente de leitura | Sem ações que alterem produtos |
+| Três cenários obrigatórios | `evidencias/cenarios_agente.json` | Três cenários reais aprovados |
+| Testes adicionais (opcionais) | `tests/` e `evidencias/testes_unitarios.json` | Sete testes locais aprovados |
+| README e reprodução | Este arquivo e comandos abaixo | Documentado; vídeo pendente |
+| Vídeo até cinco minutos | Link na seção Entrega | Vídeo e link pendentes |
+
+### Entradas e resultados dos três cenários
+
+| Entrada | Esperado | Observado |
+| --- | --- | --- |
+| Como está o estoque do PRD-001? | Consultar e comparar com o mínimo | Mouse sem fio, 5 unidades, mínimo 10, estoque baixo; API consultada |
+| Como está o estoque do PRD-999? | Tratar produto inexistente | Produto não encontrado; API consultada |
+| O que é estoque mínimo? | Explicar sem consultar produtos | Explicação conceitual; `consultou_api: false` |
+
+Os arquivos `integracao_n8n.json` e `testes_unitarios.json` são transcrições identificadas das capturas fornecidas pelo aluno. `cenarios_agente.json` foi gerado pelo script de execução real. O JSON exportado do workflow contém a configuração, não o histórico das execuções.
+
+## Iniciar novamente no computador já configurado
+
+Abra três terminais. Ajuste os caminhos se salvou as pastas em outro local.
+
+**Terminal 1 — API do professor:**
+
+```bash
+cd /home/thiago/Documentos/agentes_IA_SCTEC/api-estoque-professor
+.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+**Terminal 2 — servidor do agente:**
+
+```bash
+cd /home/thiago/Documentos/agentes_IA_SCTEC/agente-estoque
+.venv/bin/python -m uvicorn servidor:app --host 127.0.0.1 --port 8001
+```
+
+**Terminal 3 — n8n e comandos de demonstração:**
+
+```bash
+cd /home/thiago/Documentos/agentes_IA_SCTEC/agente-estoque
+sudo docker compose up -d
+source .venv/bin/activate
+```
+
+Se os servidores já estiverem funcionando, não inicie uma segunda cópia. Confira http://127.0.0.1:8000/health e http://127.0.0.1:8001/health. O editor n8n fica em http://localhost:5678. Os dois terminais de servidor permanecem abertos; o terceiro fica livre para os testes.
