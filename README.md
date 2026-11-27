@@ -8,7 +8,7 @@ Responder à pergunta: “Como está o estoque do produto PRD-001?”, consultan
 
 ## Estado atual
 
-Repositório criado e primeira consulta HTTP à API do professor realizada com sucesso. O agente inicial passou em cinco testes locais e nos três cenários reais com Gemini e API do professor. A integração n8n permanece pendente. Docker instalado e n8n aberto no navegador, conforme verificação do usuário. Chave Gemini configurada localmente; modelo selecionado: gemini-3.1-flash-lite.
+Repositório criado e primeira consulta HTTP à API do professor realizada com sucesso. O agente inicial passou em sete testes locais e nos três cenários reais com Gemini e API do professor. A integração n8n foi executada com sucesso pelo aluno e o workflow foi exportado em JSON. Docker instalado e n8n aberto no navegador, conforme verificação do usuário. Chave Gemini configurada localmente; modelo selecionado: gemini-3.1-flash-lite.
 
 ## Executar a API de apoio
 
@@ -62,7 +62,7 @@ sudo docker compose stop    # parar
 sudo docker compose start   # iniciar novamente
 ```
 
-Esta configuração prepara apenas o editor n8n. O workflow integrado ao agente será construído na etapa de integração. Instalação concluída; o usuário demonstrou a tela de configuração inicial do n8n no navegador.
+Instalação concluída e integração demonstrada. O workflow exportado está em `workflows/consulta-estoque.json`.
 
 ## Organização Git
 
@@ -88,6 +88,27 @@ Esta venv pertence ao agente e é independente da venv da API do professor. O n8
 - `develop`: integração do desenvolvimento.
 - `feature/...`: trabalho de cada etapa, integrado primeiro em `develop`.
 
+## Conexão HTTP para o n8n
+
+O arquivo `servidor.py` recebe um JSON com `pergunta` e chama o mesmo grafo usado por `main.py`. O n8n não recebe a chave do Gemini e não decide a análise.
+
+Dentro da pasta do projeto, com as dependências instaladas:
+
+```bash
+source .venv/bin/activate
+python -m uvicorn servidor:app --host 127.0.0.1 --port 8001
+```
+
+Mantenha esse terminal aberto. A API do professor também deve continuar funcionando na porta 8000. Para verificar somente o servidor do agente, abra http://127.0.0.1:8001/health. A documentação interativa fica em http://127.0.0.1:8001/docs.
+
+No Linux, o Compose usa `network_mode: host` para que o n8n alcance o agente em `127.0.0.1:8001`. `N8N_LISTEN_ADDRESS=127.0.0.1` mantém o editor acessível somente neste computador. Aplique a alteração com `sudo docker compose up -d`; o volume existente é mantido. Esta configuração de rede é destinada ao Docker Engine no Linux.
+
+O workflow foi montado manualmente pelo aluno: Webhook (POST, caminho `consulta-estoque`) → HTTP Request (POST para `http://127.0.0.1:8001/perguntar`) → Respond to Webhook. A pergunta recebida no corpo do Webhook será enviada ao agente no campo `pergunta`.
+
+Status: o aluno executou o workflow e apresentou os três nós verdes e a resposta real do produto PRD-001 no terminal. O registro transcrito está em `evidencias/integracao_n8n.json`. Os sete testes unitários, incluindo os dois de contrato HTTP, passaram no terminal local do aluno. O resultado exibido na captura foi transcrito em `evidencias/testes_unitarios.json`.
+
+Referências: https://docs.docker.com/engine/network/drivers/host/ e https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook/
+
 ## API de apoio
 
 Repositório do professor: https://github.com/wangsouza/api-estoque
@@ -96,9 +117,8 @@ O código do agente será desenvolvido neste repositório. A API do professor é
 
 ## Entregáveis pendentes
 
-- Workflow n8n exportado e evidência da troca de dados.
-- Configuração e instruções reproduzíveis de execução.
-- Arquitetura, limitações e link do vídeo.
+- Revisar a documentação e preparar o vídeo de até cinco minutos.
+- Incluir o link do vídeo e submeter os links no AVA.
 
 Credenciais devem permanecer em `.env`, fora do Git. O projeto utiliza dados fictícios.
 
@@ -139,7 +159,7 @@ As quantidades são comparadas por Python: zero significa esgotado; acima de zer
 
 Somente consultas por um código de produto por vez; não cadastra nem altera dados. Por isso, não há ação sensível que exija aprovação humana. Perguntas conceituais dependem da resposta do modelo e podem conter imprecisões. Instruções do LLM não garantem proteção absoluta contra entradas maliciosas: a ferramenta é restrita a leitura, e o código escolhido deve estar presente na pergunta. Indisponibilidade do modelo ou da API produz uma mensagem controlada.
 
-Ainda faltam o workflow integrado ao agente, sua exportação/evidência e o vídeo de até cinco minutos.
+O workflow está integrado e exportado. Ainda falta preparar e incluir o vídeo de até cinco minutos.
 
 ## Ordem de leitura para quem está começando
 
@@ -160,3 +180,31 @@ A API local do professor também precisou ser reiniciada. Ela deve estar executa
 Os três cenários reais passaram e estão em `evidencias/cenarios_agente.json`, com modelo, horário, entrada, expectativa, resultado observado e verificação automática. A explicação conceitual foi revisada: descreve o estoque mínimo como quantidade de referência para evitar falta durante a reposição. O script retorna código de erro se um cenário falhar; o teste conceitual ainda exige revisão humana do conteúdo.
 
 Referência do modelo: https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite
+
+## Importar e testar o workflow n8n
+
+1. Inicie a API do professor na porta 8000 e o servidor do agente na porta 8001, conforme instruções acima.
+2. Execute `sudo docker compose up -d` e abra http://localhost:5678.
+3. Crie um workflow e use o menu de três pontos para importar de arquivo: `workflows/consulta-estoque.json`.
+4. Confira os nós: Webhook → HTTP Request → Respond to Webhook.
+5. Clique em **Execute workflow**, deixando o Webhook aguardando uma solicitação de teste.
+6. Em outro terminal, envie:
+
+```bash
+curl -sS --max-time 70 \
+  -X POST http://localhost:5678/webhook-test/consulta-estoque \
+  -H 'Content-Type: application/json' \
+  -d '{"pergunta":"Como está o estoque do PRD-001?"}'
+```
+
+O retorno esperado inclui `consultou_api: true`, quantidade 5, mínimo 10 e estoque baixo. O modo de teste exige iniciar a escuta novamente para cada execução. Não é necessário publicar o workflow para esta demonstração.
+
+Se houver conexão recusada, confira http://127.0.0.1:8001/health e a rede do contêiner:
+
+```bash
+sudo docker inspect agente-estoque-sctec-n8n-1 --format '{{.HostConfig.NetworkMode}}'
+```
+
+O resultado deve ser `host`. Caso ainda esteja na rede antiga, salve o workflow e aplique `sudo docker compose up -d --force-recreate n8n`. O volume conserva a conta e os workflows salvos.
+
+Se o servidor indicar `address already in use`, verifique `/health` antes de iniciar outra cópia: a porta pode já estar ocupada pelo agente em execução.

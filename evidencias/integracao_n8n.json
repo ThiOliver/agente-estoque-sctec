@@ -1,0 +1,27 @@
+{
+  "origem": "Registro transcrito das capturas do n8n e do terminal fornecidas pelo aluno nesta conversa; não é uma exportação nativa de execução do n8n.",
+  "workflow": "workflows/consulta-estoque.json",
+  "requisicao": {
+    "metodo": "POST",
+    "url": "http://localhost:5678/webhook-test/consulta-estoque",
+    "corpo": {
+      "pergunta": "Como está o estoque do PRD-001?"
+    }
+  },
+  "esperado": "Três nós executados; produto PRD-001 com 5 unidades, mínimo 10 e estoque baixo.",
+  "observado": {
+    "nos_concluidos": [
+      "Webhook",
+      "HTTP Request",
+      "Respond to Webhook"
+    ],
+    "codigo": "PRD-001",
+    "nome": "Mouse sem fio",
+    "quantidade_atual": 5,
+    "estoque_minimo": 10,
+    "resposta": "PRD-001 — Mouse sem fio: 5 un disponíveis; mínimo 10. Estoque baixo. Fonte: API de estoque.",
+    "consultou_api": true
+  },
+  "rede_docker_observada": "host",
+  "resultado": "Sucesso observado nas capturas do aluno"
+}
